@@ -39,7 +39,7 @@ const fulfillPromise = async (req, res) => {
   if (!idPlan || !valor) {
     return res.status(400).json({ error: "Parâmetros ausentes" });
   }
-  if (String(valor)) {
+  if (typeof valor === "string") {
     const clearValue = valor.replace(",", "").replace(".", "");
     const newValue = Number(clearValue);
     try {
@@ -63,10 +63,11 @@ const fulfillPromise = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: `${error?.message}` });
     }
+  } else {
+    return res
+      .status(400)
+      .json({ error: "Valor precisa ser passada como string em centavos" });
   }
-  return res
-    .status(400)
-    .json({ error: "Valor precisa ser passada como string em centavos" });
 };
 
 module.exports = {
