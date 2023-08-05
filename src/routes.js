@@ -3,6 +3,6 @@ const { getProduct } = require("./controllers/crowdfunding");
 
 const routes = express();
 
-routes.get("/produto/:nomeProduto", getProduct);
+routes.get("/produto/", getProduct);
 
 module.exports = routes;
