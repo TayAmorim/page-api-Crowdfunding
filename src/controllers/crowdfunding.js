@@ -66,7 +66,7 @@ const fulfillPromise = async (req, res) => {
   }
   return res
     .status(400)
-    .json({ error: "Valor precisa ser passada como string" });
+    .json({ error: "Valor precisa ser passada como string em centavos" });
 };
 
 module.exports = {
