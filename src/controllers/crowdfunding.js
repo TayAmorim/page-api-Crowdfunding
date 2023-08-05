@@ -25,6 +25,19 @@ const getProduct = async (req, res) => {
   }
 };
 
+const catchPlans = async (req, res) => {
+  try {
+    const { rows } = await pool.query("select * from planos");
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: `${error?.message}` });
+  }
+};
+
+const fulfillPromise = async (req, res) => {};
+
 module.exports = {
   getProduct,
+  catchPlans,
+  fulfillPromise,
 };
