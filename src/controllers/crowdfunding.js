@@ -37,30 +37,41 @@ const catchPlans = async (req, res) => {
 };
 
 const fulfillPromise = async (req, res) => {
-  const { idPlan, valor } = req.body;
-  if (!idPlan || !valor) {
+  const { id_plano, valor } = req.body;
+  if (!id_plano || !valor) {
     return res.status(400).json({ error: "Parâmetros ausentes" });
   }
   if (typeof valor === "string") {
     const clearValue = valor.replace(",", "").replace(".", "");
     const newValue = Number(clearValue);
+
     try {
-      await pool.query("insert into apoios (valor, id_plano) values ($1, $2)", [
-        newValue,
-        idPlan,
-      ]);
-      await pool.query(
-        "update planos set quantidade = quantidade - 1 where id = $1",
-        [idPlan]
-      );
-      const { rows } = await pool.query(
-        "select id_produto from planos where id = $1",
-        [idPlan]
-      );
-      await pool.query(
-        "update produtos set valor_arrecadado =  + $1, total_apoios = total_apoios + 1 where id = $2",
-        [newValue, rows[0].id_produto]
-      );
+      await conexao("apoios").insert({ valor: newValue, id_plano });
+      const { quantidade } = await conexao("planos")
+        .select("quantidade")
+        .where("id", id_plano)
+        .first();
+      await conexao("planos")
+        .update({ quantidade: quantidade - 1 })
+        .where("id", id_plano);
+
+      const { id_produto } = await conexao("planos")
+        .select("id_produto")
+        .where("id", id_plano)
+        .first();
+
+      const { valor_arrecadado, total_apoios } = await conexao("produtos")
+        .select("valor_arrecadado", "total_apoios")
+        .where("id", id_produto)
+        .first();
+
+      const produto = await conexao("produtos")
+        .update({
+          valor_arrecadado: valor_arrecadado + newValue,
+          total_apoios: total_apoios + 1,
+        })
+        .where("id", id_produto);
+
       res.status(201).json("Apoio realizado com sucesso");
     } catch (error) {
       res.status(500).json({ error: `${error?.message}` });
