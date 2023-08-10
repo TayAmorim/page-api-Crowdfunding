@@ -7,20 +7,21 @@ const getProduct = async (req, res) => {
     const productResponse = await conexao("produtos")
       .where("id", idProduto)
       .first();
-
-    await pool.query("select * from produtos where id = $1", [idProduto]);
-    const statusProduct = await pool.query(
-      "select * from produtos where data_limite < now()"
+    const statusProduct = await conexao("produtos").where(
+      "data_limite",
+      "<",
+      "now()"
     );
-    if (statusProduct.rowCount > 0) {
+
+    if (statusProduct.length > 0) {
       await pool.query("update produtos set status = false where id = $1", [
         statusProduct.rows[0].id,
       ]);
     }
-    if (productResponse.rowCount < 1) {
+    if (productResponse.length < 0) {
       return res.status(404).json({ error: "Recurso não encontrado na API." });
     }
-    return res.json(productResponse.rows[0]);
+    return res.json(productResponse);
   } catch (error) {
     res.status(500).json({ error: `${error?.message}` });
   }
@@ -28,8 +29,8 @@ const getProduct = async (req, res) => {
 
 const catchPlans = async (req, res) => {
   try {
-    const { rows } = await pool.query("select * from planos");
-    res.json(rows);
+    const getPlans = await conexao("planos");
+    res.json(getPlans);
   } catch (error) {
     res.status(500).json({ error: `${error?.message}` });
   }
