@@ -1,13 +1,14 @@
-const pool = require("../connection");
+const conexao = require("../connection");
 
 const getProduct = async (req, res) => {
-  const { nomeProduto } = req.body;
+  const { idProduto } = req.params;
 
   try {
-    const productResponse = await pool.query(
-      "select * from produtos where nome = $1",
-      [nomeProduto]
-    );
+    const productResponse = await conexao("produtos")
+      .where("id", idProduto)
+      .first();
+
+    await pool.query("select * from produtos where id = $1", [idProduto]);
     const statusProduct = await pool.query(
       "select * from produtos where data_limite < now()"
     );

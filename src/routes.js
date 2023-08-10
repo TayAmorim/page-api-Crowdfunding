@@ -7,7 +7,7 @@ const {
 
 const routes = express();
 
-routes.get("/produto", getProduct);
+routes.get("/produto/:idProduto", getProduct);
 routes.get("/planos", catchPlans);
 routes.post("/apoio", fulfillPromise);
 
