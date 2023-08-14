@@ -1,14 +1,13 @@
 require("dotenv").config();
 
-const keyBd = process.env.KEY_BD;
-
 const conexao = require("knex")({
   client: "pg",
   connection: {
-    host: "localhost",
-    user: "postgres",
-    password: keyBd,
-    database: "pagina_crowdfunding",
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
   },
 });
 
