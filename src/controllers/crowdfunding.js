@@ -14,9 +14,7 @@ const getProduct = async (req, res) => {
     );
 
     if (statusProduct.length > 0) {
-      await pool.query("update produtos set status = false where id = $1", [
-        statusProduct.rows[0].id,
-      ]);
+      await conexao("produtos").update("status", false).where("id", idProduto);
     }
     if (productResponse.length < 0) {
       return res.status(404).json({ error: "Recurso não encontrado na API." });
