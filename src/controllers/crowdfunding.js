@@ -40,16 +40,13 @@ const fulfillPromise = async (req, res) => {
 
   try {
     await schemaFulFillPromise.validate(req.body);
-    const clearValue = valor.replace(",", "").replace(".", "");
-    const newValue = Number(clearValue);
-    if (!newValue) {
-      return res
-        .status(404)
-        .json({
-          error: "O valor deve ser mandando em centavos no tipo string",
-        });
+
+    if (isNaN(valor)) {
+      return res.status(404).json({
+        error: "O valor deve ser mandando em centavos no tipo string",
+      });
     }
-    await conexao("apoios").insert({ valor: newValue, id_plano });
+    await conexao("apoios").insert({ valor, id_plano });
     const { quantidade } = await conexao("planos")
       .select("quantidade")
       .where("id", id_plano)
