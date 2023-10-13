@@ -67,7 +67,7 @@ const fulfillPromise = async (req, res) => {
 
     const produto = await conexao("produtos")
       .update({
-        valor_arrecadado: valor_arrecadado + newValue,
+        valor_arrecadado: valor_arrecadado + valor,
         total_apoios: total_apoios + 1,
       })
       .where("id", id_produto);
