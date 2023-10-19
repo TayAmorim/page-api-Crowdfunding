@@ -16,6 +16,8 @@ const getProduct = async (req, res) => {
     const plans = await conexao("planos").where('quantidade', 0 );
     if (plans.length === 3) {
        await conexao("produtos").update("status", false).where("id", idProduto);
+    } else {
+      await conexao("produtos").update("status", true).where("id", idProduto);
     }
 
     if (statusProduct.length > 0) {
