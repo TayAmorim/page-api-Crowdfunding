@@ -13,6 +13,11 @@ const getProduct = async (req, res) => {
       "<",
       "now()"
     );
+    const plans = await conexao("planos").where('quantidade', 0 );
+    if (plans.length === 3) {
+       await conexao("produtos").update("status", false).where("id", idProduto);
+       return res.json({message: 'Projeto Finalizado'})
+    }
 
     if (statusProduct.length > 0) {
       await conexao("produtos").update("status", false).where("id", idProduto);
