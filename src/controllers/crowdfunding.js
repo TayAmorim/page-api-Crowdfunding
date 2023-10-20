@@ -13,16 +13,13 @@ const getProduct = async (req, res) => {
       "<",
       "now()"
     );
-    const plans = await conexao("planos").where('quantidade', 0 );
-    if (plans.length === 3) {
-       await conexao("produtos").update("status", false).where("id", idProduto);
+    const plans = await conexao("planos").where("quantidade", 0);
+    if (plans.length === 3 || statusProduct.length > 0) {
+      await conexao("produtos").update("status", false).where("id", idProduto);
     } else {
       await conexao("produtos").update("status", true).where("id", idProduto);
     }
 
-    if (statusProduct.length > 0) {
-      await conexao("produtos").update("status", false).where("id", idProduto);
-    }
     if (productResponse.length < 0) {
       return res.status(404).json({ error: "Recurso não encontrado na API." });
     }
